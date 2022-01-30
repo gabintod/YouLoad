@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:youload/main.dart';
+import 'package:youload/widgets/SearchResultList.dart';
 import 'package:youload/widgets/utils/SimpleSearchDelegate.dart';
+import 'package:youload/widgets/utils/VideoTile.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -10,8 +13,15 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  late SearchDelegate searchDelegate;
+
   @override
   Widget build(BuildContext context) {
+    searchDelegate = SimpleSearchDelegate(
+      resultsBuilder: (_, query) => buildSearchResults(query),
+      suggestionsBuilder: (_, query) => buildSearchSuggestions(query),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Wrap(
@@ -22,7 +32,9 @@ class _MainPageState extends State<MainPage> {
               'assets/icon/icon.png',
               height: 40,
             ),
-            const Text('YouLoad'),
+            const Text('YouLoad',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, fontFamily: 'Impact')),
           ],
         ),
         actions: [
@@ -30,9 +42,7 @@ class _MainPageState extends State<MainPage> {
             icon: const Icon(Icons.search_outlined),
             onPressed: () => showSearch(
               context: context,
-              delegate: SimpleSearchDelegate(
-                resultsBuilder: (_, query) => Text(query),
-              ),
+              delegate: searchDelegate,
             ),
           ),
           PopupMenuButton<ThemeMode>(
@@ -63,4 +73,58 @@ class _MainPageState extends State<MainPage> {
       body: Container(),
     );
   }
+
+  Widget buildSearchSuggestions(String query) {
+    Future<List<String>> suggestions =
+        YouLoad.of(context).youtubeExplode.search.getQuerySuggestions(query);
+
+    return FutureBuilder<List<String>>(
+      future: suggestions,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error,
+                color: Theme.of(context).errorColor,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                snapshot.error.toString(),
+                style: Theme.of(context).textTheme.caption,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          );
+        }
+
+        if (snapshot.hasData) {
+          return ListView(
+            children: snapshot.data!
+                .map<Widget>(
+                  (result) => ListTile(
+                    leading: const Icon(Icons.search),
+                    title: Text(result),
+                    onTap: () {
+                      setState(() {
+                        searchDelegate.query = result;
+                        searchDelegate.showResults(context);
+                      });
+                    },
+                  ),
+                )
+                .toList(),
+          );
+        }
+
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+
+  Widget buildSearchResults(String query) => SearchResultList(query: query);
 }

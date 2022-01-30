@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:youload/widgets/MainPage.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,6 +61,7 @@ class YouLoad extends StatefulWidget {
 }
 
 class YouLoadState extends State<YouLoad> {
+  late final YoutubeExplode youtubeExplode;
   late ThemeMode _themeMode;
 
   ThemeMode get themeMode => _themeMode;
@@ -73,6 +75,7 @@ class YouLoadState extends State<YouLoad> {
 
   @override
   void initState() {
+    youtubeExplode = YoutubeExplode();
     _themeMode = widget.themeMode ?? ThemeMode.system;
 
     super.initState();
@@ -127,6 +130,13 @@ class YouLoadState extends State<YouLoad> {
       themeMode: _themeMode,
       home: const MainPage(),
     );
+  }
+
+  @override
+  void dispose() {
+    youtubeExplode.close();
+
+    super.dispose();
   }
 
   Future<void> saveTheme() async {

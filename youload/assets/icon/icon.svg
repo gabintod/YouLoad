@@ -5,6 +5,7 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="310mm"
@@ -18,7 +19,46 @@
    inkscape:export-xdpi="41.950966"
    inkscape:export-ydpi="41.950966">
   <defs
-     id="defs2" />
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient861">
+      <stop
+         style="stop-color:#f2f2f2;stop-opacity:1"
+         offset="0"
+         id="stop857" />
+      <stop
+         style="stop-color:#fafafa;stop-opacity:0.92517006"
+         offset="1"
+         id="stop859" />
+    </linearGradient>
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="path-effect834"
+       is_visible="true"
+       lpeversion="1"
+       satellites_param="F,0,0,1,0,7.9375,0,1 @ F,0,0,1,0,7.9375,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,7.9375,0,1 @ F,0,0,1,0,7.9375,0,1 @ F,0,0,1,0,7.9375,0,1 @ F,0,0,1,0,0,0,1"
+       unit="px"
+       method="auto"
+       mode="F"
+       radius="30"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient861"
+       id="linearGradient863"
+       x1="100.33968"
+       y1="199.30397"
+       x2="199.15254"
+       y2="100.49111"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -26,9 +66,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="372.12268"
-     inkscape:cy="613.10492"
+     inkscape:zoom="0.7"
+     inkscape:cx="-292.07175"
+     inkscape:cy="568.53874"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -65,16 +105,23 @@
        id="path847"
        style="fill:#006aff;fill-opacity:1;stroke-width:0.256193"
        d="M 149.73763,44.999835 C 112.13617,45.244705 74.328503,44.990197 36.998015,50.018486 18.430495,52.526525 4.9799271,69.99221 4.00256,88.203975 -1.3761658,130.16572 -1.6232135,173.00844 4.5388439,214.89923 c 1.5782854,18.50895 17.2282871,34.09274 35.7618221,35.42851 49.556553,5.60819 99.585494,4.75728 149.378874,4.29942 26.29927,-1.06337 52.9384,-0.67675 78.82378,-5.93347 15.94895,-4.48182 25.95491,-20.09191 27.26613,-36.05437 5.66259,-42.00136 5.87785,-84.94616 -0.2753,-126.90459 C 293.9434,68.559393 280.95683,52.755982 263.42145,50.446169 225.88153,44.8961 187.60974,45.293094 149.73763,44.999835 Z" />
-    <path
-       style="fill:#fcfcfc;fill-opacity:1;stroke:none;stroke-width:0.333333px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 130,100 h 40 v 40 h 20 l -40,40 -40,-40 h 20 z"
-       id="path857" />
-    <rect
-       style="opacity:1;fill:#fcfcfc;fill-opacity:1;stroke:none;stroke-width:2.21569;stroke-linecap:round;stroke-linejoin:round"
-       id="rect859"
-       width="80"
-       height="20"
-       x="110"
-       y="180" />
+    <g
+       id="g847"
+       style="fill-opacity:1;fill:url(#linearGradient863)">
+      <path
+         style="fill:url(#linearGradient863);fill-opacity:1;stroke:none;stroke-width:0.333333px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 137.9375,100 h 24.125 A 7.9375,7.9375 45 0 1 170,107.9375 V 140 h 12.0625 a 3.2878202,3.2878202 67.5 0 1 2.32484,5.61266 l -28.77468,28.77468 a 7.9375,7.9375 0 0 1 -11.22532,0 L 115.61266,145.61266 A 3.2878202,3.2878202 112.5 0 1 117.9375,140 H 130 V 107.9375 A 7.9375,7.9375 135 0 1 137.9375,100 Z"
+         id="path857"
+         inkscape:original-d="m 130,100 h 40 v 40 h 20 l -40,40 -40,-40 h 20 z"
+         inkscape:path-effect="#path-effect834" />
+      <rect
+         style="opacity:1;fill:url(#linearGradient863);fill-opacity:1;stroke:none;stroke-width:2.21569;stroke-linecap:round;stroke-linejoin:round"
+         id="rect859"
+         width="80"
+         height="20"
+         x="110"
+         y="180"
+         ry="10" />
+    </g>
   </g>
 </svg>

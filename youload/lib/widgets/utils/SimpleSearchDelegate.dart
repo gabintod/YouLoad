@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class SimpleSearchDelegate extends SearchDelegate {
   final Widget Function(BuildContext, String) resultsBuilder;
+  final Widget Function(BuildContext, String)? suggestionsBuilder;
 
-  SimpleSearchDelegate({required this.resultsBuilder});
+  SimpleSearchDelegate({required this.resultsBuilder, this.suggestionsBuilder});
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -30,6 +31,6 @@ class SimpleSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return Column();
+    return suggestionsBuilder?.call(context, query) ?? Column();
   }
 }
