@@ -12,7 +12,7 @@ void main() async {
 }
 
 class YouLoad extends StatefulWidget {
-  static const String THEME_MODE_MEMKEY = 'theme_mode_memkey';
+  static const String themeModeMemKey = 'theme_mode_memkey';
 
   static const MaterialColor megabombColor = MaterialColor(0xFF0254CF, {
     50: Color(0xFFF3F7FD),
@@ -54,7 +54,7 @@ class YouLoad extends StatefulWidget {
   static Future<ThemeMode?> getSavedTheme() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    int? themeModeIndex = preferences.getInt(THEME_MODE_MEMKEY);
+    int? themeModeIndex = preferences.getInt(themeModeMemKey);
     if (themeModeIndex == null) return null;
     return ThemeMode.values[themeModeIndex];
   }
@@ -142,6 +142,6 @@ class YouLoadState extends State<YouLoad> {
   Future<void> saveTheme() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
-    await preferences.setInt(YouLoad.THEME_MODE_MEMKEY, themeMode.index);
+    await preferences.setInt(YouLoad.themeModeMemKey, themeMode.index);
   }
 }

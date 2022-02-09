@@ -1,9 +1,7 @@
-import 'dart:collection';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:youload/main.dart';
-import 'package:youload/widgets/utils/KeepAliveBuilder.dart';
+import 'package:youload/widgets/DownloadPage.dart';
+import 'package:youload/widgets/StreamsListDialog.dart';
 import 'package:youload/widgets/utils/VideoTile.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -156,88 +154,24 @@ class _SearchResultListState extends State<SearchResultList> {
         return VideoTile(
           results[index],
           onTap: () {
-            showDialog(
-              context: context,
-              builder: (context) {
-                int iType = 0;
-
-                return FutureBuilder<StreamManifest>(
-                  future: YouLoad.of(context)
-                      .youtubeExplode
-                      .videos
-                      .streamsClient
-                      .getManifest(results[index].id),
-                  builder: (context, snapshot) {
-                    return StatefulBuilder(
-                      builder: (context, setState) {
-                        List<UnmodifiableListView<StreamInfo>> streamsInfo = [];
-
-                        if (snapshot.hasData) {
-                          streamsInfo = [
-                            snapshot.data!.muxed,
-                            snapshot.data!.video,
-                            snapshot.data!.audio,
-                            snapshot.data!.videoOnly,
-                            snapshot.data!.audioOnly,
-                          ];
-                        }
-
-                        return SimpleDialog(
-                          contentPadding: const EdgeInsets.all(20),
-                          children: [
-                            Wrap(
-                              children: [
-                                ChoiceChip(
-                                  label: const Text('Muxed'),
-                                  selected: iType == 0,
-                                  onSelected: (_) => setState(() => iType = 0),
-                                ),
-                                ChoiceChip(
-                                  label: const Text('Video'),
-                                  selected: iType == 1,
-                                  onSelected: (_) => setState(() => iType = 1),
-                                ),
-                                ChoiceChip(
-                                  label: const Text('Audio'),
-                                  selected: iType == 2,
-                                  onSelected: (_) => setState(() => iType = 2),
-                                ),
-                                ChoiceChip(
-                                  label: const Text('Video only'),
-                                  selected: iType == 3,
-                                  onSelected: (_) => setState(() => iType = 3),
-                                ),
-                                ChoiceChip(
-                                  label: const Text('Audio only'),
-                                  selected: iType == 4,
-                                  onSelected: (_) => setState(() => iType = 4),
-                                ),
-                              ],
-                            ),
-                            if (!snapshot.hasData)
-                              const AspectRatio(
-                                aspectRatio: 1,
-                                child: Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              ),
-                            if (snapshot.hasData)
-                              ...streamsInfo[iType]
-                                  .map<Widget>(
-                                    (info) => ListTile(
-                                      title: Text(info.qualityLabel),
-                                      subtitle: Text(info.toString()),
-                                    ),
-                                  )
-                                  .toList(),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                );
-              },
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DownloadPage(video: results[index]),
+              ),
             );
+            return;
+
+            // showDialog(
+            //   context: context,
+            //   builder: (context) => StreamsListDialog(
+            //     results[index],
+            //     onAudioDownload: (info) =>
+            //         widget.onAudioDownload?.call(results[index], info),
+            //     onVideoDownload: (info) =>
+            //         widget.onVideoDownload?.call(results[index], info),
+            //   ),
+            // );
           },
         );
       },

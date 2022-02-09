@@ -1,8 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:open_file/open_file.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:youload/main.dart';
+import 'package:youload/utils/Config.dart';
 import 'package:youload/widgets/SearchResultList.dart';
 import 'package:youload/widgets/utils/SimpleSearchDelegate.dart';
-import 'package:youload/widgets/utils/VideoTile.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class MainPage extends StatefulWidget {
@@ -14,6 +19,14 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late SearchDelegate searchDelegate;
+  late Future<List<FileSystemEntity>?> downloadedFiles;
+
+  @override
+  void initState() {
+    downloadedFiles = _getDownloads();
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,8 +83,73 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
       ),
-      body: Container(),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {
+            downloadedFiles = _getDownloads();
+          });
+        },
+        child: FutureBuilder<List<FileSystemEntity>?>(
+          future: downloadedFiles,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error,
+                      color: Theme.of(context).errorColor,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      snapshot.error.toString(),
+                      style: Theme.of(context).textTheme.caption,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            if (snapshot.hasData) {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  FileSystemEntity file = snapshot.data![index];
+
+                  return ListTile(
+                    leading: const Icon(Icons.music_video),
+                    title: Text(file.path.split('/').last),
+                    subtitle: Text(file.path),
+                    onTap: () => OpenFile.open(file.path),
+                    isThreeLine: true,
+                  );
+                },
+              );
+            }
+
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        ),
+      ),
     );
+  }
+
+  Future<List<FileSystemEntity>?> _getDownloads() async {
+    Directory? downloadDirectory =
+        (await Config.getInstance()).downloadDirectory;
+
+    if (downloadDirectory == null || !downloadDirectory.existsSync()) {
+      throw Exception('Download directory not found');
+    }
+
+    return downloadDirectory.listSync();
   }
 
   Widget buildSearchSuggestions(String query) {
