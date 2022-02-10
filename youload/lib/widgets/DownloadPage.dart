@@ -25,21 +25,29 @@ class _DownloadPageState extends State<DownloadPage> {
   String? _defaultFolderPath;
   String? _defaultFileName;
 
+  String? get _defaultFileFormat => (_videoStream ?? _audioStream)?.container.name;
+
   int _index = 0;
   StreamManifest? _streamManifest;
   VideoOnlyStreamInfo? _videoStream;
   AudioOnlyStreamInfo? _audioStream;
   Directory? _downloadDirectory;
   String? _fileName;
+  String? _fileFormat;
+
+  double? _videoDownloadProgress;
+  double? _audioDownloadProgress;
+  double? _mergingSourcesProgress;
+  double? _encodingOutputProgress;
+
+  File? _videoTempFile;
+  File? _audioTempFile;
+  File? _mergingTempFile;
+  File? _outputFile;
 
   @override
   void initState() {
-    YouLoad.of(context)
-        .youtubeExplode
-        .videos
-        .streamsClient
-        .getManifest(widget.video.id)
-        .then((manifest) {
+    YouLoad.of(context).youtubeExplode.videos.streamsClient.getManifest(widget.video.id).then((manifest) {
       if (!mounted) return null;
 
       setState(() {
@@ -103,8 +111,7 @@ class _DownloadPageState extends State<DownloadPage> {
                       shrinkWrap: true,
                       itemCount: _streamManifest!.videoOnly.length,
                       itemBuilder: (context, index) {
-                        VideoOnlyStreamInfo info =
-                            _streamManifest!.videoOnly[index];
+                        VideoOnlyStreamInfo info = _streamManifest!.videoOnly[index];
 
                         return ListTile(
                           leading: const Icon(Icons.ondemand_video),
@@ -129,8 +136,7 @@ class _DownloadPageState extends State<DownloadPage> {
                     ),
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                     child: Row(
                       children: [
                         const Spacer(),
@@ -162,8 +168,7 @@ class _DownloadPageState extends State<DownloadPage> {
                       shrinkWrap: true,
                       itemCount: _streamManifest!.audioOnly.length,
                       itemBuilder: (context, index) {
-                        AudioOnlyStreamInfo info =
-                            _streamManifest!.audioOnly[index];
+                        AudioOnlyStreamInfo info = _streamManifest!.audioOnly[index];
 
                         return ListTile(
                           leading: const Icon(Icons.music_note),
@@ -187,8 +192,7 @@ class _DownloadPageState extends State<DownloadPage> {
                     ),
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                     child: Row(
                       children: [
                         TextButton(
@@ -232,8 +236,7 @@ class _DownloadPageState extends State<DownloadPage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                         child: TextFormField(
                           controller: _folderPathController,
                           decoration: InputDecoration(
@@ -258,8 +261,7 @@ class _DownloadPageState extends State<DownloadPage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                         child: TextFormField(
                           initialValue: _defaultFileName,
                           decoration: const InputDecoration(
@@ -270,10 +272,9 @@ class _DownloadPageState extends State<DownloadPage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                         child: DropdownButtonFormField<String>(
-                          value: (_videoStream ?? _audioStream)?.container.name,
+                          value: _defaultFileFormat,
                           items: const [
                             DropdownMenuItem(
                               value: 'mp3',
@@ -310,8 +311,7 @@ class _DownloadPageState extends State<DownloadPage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(20),
-                        child: Text('Sources',
-                            style: Theme.of(context).textTheme.overline),
+                        child: Text('Sources', style: Theme.of(context).textTheme.overline),
                       ),
                       ListTile(
                         dense: true,
@@ -322,8 +322,7 @@ class _DownloadPageState extends State<DownloadPage> {
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                      _videoStream!.videoResolution.toString()),
+                                  Text(_videoStream!.videoResolution.toString()),
                                   Text(_videoStream!.container.name),
                                   Text(_videoStream!.size.toString()),
                                 ],
@@ -348,8 +347,7 @@ class _DownloadPageState extends State<DownloadPage> {
                     ],
                   )),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                     child: Row(
                       children: [
                         TextButton(
@@ -361,9 +359,11 @@ class _DownloadPageState extends State<DownloadPage> {
                           },
                         ),
                         const Spacer(),
-                        const ElevatedButton(
-                          child: Text('Download'),
-                          onPressed: null,
+                        ElevatedButton(
+                          child: const Text('Download'),
+                          onPressed: () {
+                            download();
+                          },
                         ),
                       ],
                     ),
@@ -371,16 +371,132 @@ class _DownloadPageState extends State<DownloadPage> {
                 ],
               ),
             ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Downloading video...',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 10),
+                    LinearProgressIndicator(value: _videoDownloadProgress),
+                  ],
+                ),
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Downloading audio...',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 10),
+                    LinearProgressIndicator(value: _audioDownloadProgress),
+                  ],
+                ),
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Merging sources...',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 10),
+                    LinearProgressIndicator(value: _mergingSourcesProgress),
+                  ],
+                ),
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Encoding...',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 10),
+                    LinearProgressIndicator(value: _encodingOutputProgress),
+                  ],
+                ),
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.check_circle_outline,
+                      color: Colors.green,
+                      size: 30,
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Download complete',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    ButtonBar(
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Back'),
+                        ),
+                        OutlinedButton(
+                          onPressed: () => null,
+                          child: const Text('OPEN'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
       onWillPop: () async {
+        if (_index == 8) {
+          return true;
+        }
+
+        if (_index > 3) {
+          return false;
+        }
+
         if (_index > 1) {
           setState(() {
             _index--;
           });
           return false;
         }
+
         return true;
       },
     );
@@ -394,7 +510,57 @@ class _DownloadPageState extends State<DownloadPage> {
   }
 
   Future<void> download() async {
-    // TODO
+    // TODO: add validation & save to inputs
+    if (_formKey.currentState?.validate() == true) {
+      _formKey.currentState?.save();
+
+      _videoTempFile = null;
+      _audioTempFile = null;
+      _mergingTempFile = null;
+      _outputFile = null;
+
+      if (_videoStream != null) {
+        setState(() {
+          _videoDownloadProgress = null;
+          _index = 4;
+        });
+
+        _videoTempFile = await downloadStream(
+          widget.video,
+          _videoStream!,
+          onProgress: (progress) {
+            setState(() {
+              _videoDownloadProgress = progress;
+            });
+          },
+        );
+      }
+
+      if (_audioStream != null) {
+        setState(() {
+          _audioDownloadProgress = null;
+          _index = 4;
+        });
+
+        _audioTempFile = await downloadStream(
+          widget.video,
+          _audioStream!,
+          onProgress: (progress) {
+            setState(() {
+              _audioDownloadProgress = progress;
+            });
+          },
+        );
+      }
+
+      if (_videoTempFile != null && _audioTempFile != null) {
+        // TODO: merge files
+      }
+
+      // TODO: encode file
+
+      // TODO: return output file and goto final page
+    }
   }
 
   Future<bool> checkPermissions() async {
@@ -405,12 +571,12 @@ class _DownloadPageState extends State<DownloadPage> {
     return true;
   }
 
-  Future<void> downloadAudio(Video video, StreamInfo streamInfo) async {
+  Future<File?> downloadStream(Video video, StreamInfo streamInfo, {Function(double)? onProgress}) async {
     if (!(await checkPermissions())) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Permission denied'),
       ));
-      return;
+      return null;
     }
 
     Directory? directory = (await Config.getInstance()).downloadDirectory;
@@ -419,15 +585,14 @@ class _DownloadPageState extends State<DownloadPage> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Could not find download directory'),
       ));
-      return;
+      return null;
     }
 
     bool isDialogOpened = false;
     late void Function(void Function()) dialogSetState;
     double? downloadProgress;
 
-    File file =
-        File('${directory.path}/${htmlEscape.convert(video.title)}.mp4');
+    File file = File('${directory.path}/${htmlEscape.convert(video.title)}.mp4');
 
     if (file.existsSync()) {
       bool? overrideFile = await showDialog<bool?>(
@@ -447,7 +612,7 @@ class _DownloadPageState extends State<DownloadPage> {
         ),
       );
 
-      if (overrideFile != true) return;
+      if (overrideFile != true) return null;
     }
 
     Navigator.pop(context);
@@ -476,9 +641,7 @@ class _DownloadPageState extends State<DownloadPage> {
             actions: [
               TextButton(
                 child: const Text('Open'),
-                onPressed: downloadProgress == 1
-                    ? () => OpenFile.open(file.path)
-                    : null,
+                onPressed: downloadProgress == 1 ? () => OpenFile.open(file.path) : null,
               ),
             ],
           );
@@ -489,8 +652,7 @@ class _DownloadPageState extends State<DownloadPage> {
       }),
     );
 
-    Stream<List<int>> stream =
-        YouLoad.of(context).youtubeExplode.videos.streamsClient.get(streamInfo);
+    Stream<List<int>> stream = YouLoad.of(context).youtubeExplode.videos.streamsClient.get(streamInfo);
     IOSink fileStream = file.openWrite();
 
     await stream.pipe(fileStream);
