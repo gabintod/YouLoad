@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:youload/main.dart';
-import 'package:youload/widgets/DownloadPage.dart';
+import 'download/DownloadPage.dart';
 import 'package:youload/widgets/StreamsListDialog.dart';
 import 'package:youload/widgets/utils/VideoTile.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
