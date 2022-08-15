@@ -1,4 +1,4 @@
-package com.megabomb.youload.youload
+package com.megabomb.youload
 
 import io.flutter.embedding.android.FlutterActivity
 

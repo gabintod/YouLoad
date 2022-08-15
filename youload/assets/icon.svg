@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="500mm"
+   height="500mm"
+   viewBox="0 0 500 500"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.2-2 (e86c870879, 2021-01-15)"
+   sodipodi:docname="icon.svg"
+   inkscape:export-filename="C:\Users\gabin\Documents\Perso\Programmes\Flutter\YouLoad\youload\assets\icon.png"
+   inkscape:export-xdpi="26.0096"
+   inkscape:export-ydpi="26.0096">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="715.14194"
+     inkscape:cy="1067.5641"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="2558"
+     inkscape:window-height="1360"
+     inkscape:window-x="-7"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(29.482143,59.720234)">
+    <path
+       id="rect875"
+       style="fill:#2196f3;fill-opacity:1;stroke-width:0.944882;stroke-linecap:round;stroke-linejoin:round"
+       d="M 944.88281 377.95312 C 892.91431 377.95313 850.39453 420.4729 850.39453 472.44141 L 850.39453 755.90625 L 681.25977 755.90625 C 638.74008 755.90625 617.9528 806.92936 647.24414 836.2207 L 910.86523 1099.8418 C 929.76287 1118.7394 959.05549 1118.7394 977.95312 1099.8418 L 1241.5742 836.2207 C 1271.8104 806.92936 1251.0236 755.90625 1208.5039 755.90625 L 1039.3711 755.90625 L 1039.3711 472.44141 C 1039.3711 420.4729 996.85132 377.95312 944.88281 377.95312 z M 566.92969 1228.3457 C 514.96115 1228.3457 472.44141 1270.8655 472.44141 1322.834 C 472.44141 1374.8025 514.96115 1417.3223 566.92969 1417.3223 L 1322.834 1417.3223 C 1374.8025 1417.3223 1417.3223 1374.8025 1417.3223 1322.834 C 1417.3223 1270.8655 1374.8025 1228.3457 1322.834 1228.3457 L 566.92969 1228.3457 z "
+       transform="matrix(0.26458333,0,0,0.26458333,-29.482143,-59.720234)" />
+    <path
+       d="M 45.517857,15.279766 H 395.51785 V 365.27976 H 45.517857 Z"
+       fill="none"
+       id="path835"
+       style="stroke-width:14.5833" />
+    <g
+       id="g853"
+       style="fill:#000000"
+       transform="matrix(25.000001,0,0,25.000001,-79.482143,-109.72023)">
+      <rect
+         fill="none"
+         height="24"
+         width="24"
+         id="rect851"
+         x="0"
+         y="0" />
+    </g>
+  </g>
+</svg>
